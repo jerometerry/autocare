@@ -1,0 +1,19 @@
+{
+  "name": "autocare",
+  "homepage": "https://github.com/jerometerry/autocare",
+  "authors": [
+    "Jerome Terry <jerome.l.terry@gmail.com>"
+  ],
+  "description": "",
+  "main": "",
+  "moduleType": [],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
