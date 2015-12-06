@@ -1,0 +1,19 @@
+{
+  "name": "autocare",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jerometerry/autocare.git"
+  },
+  "author": "Jerome Terry",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jerometerry/autocare/issues"
+  },
+  "homepage": "https://github.com/jerometerry/autocare#readme"
+}
