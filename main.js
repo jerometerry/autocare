@@ -61,8 +61,7 @@ router.get('/files/downloadurl', function(req, res) {
     var s3_params = {
         Bucket: S3_BUCKET,
         Key: req.query.file_name,
-        Expires: 60,
-        ACL: 'public-read'
+        Expires: 60
     };
     s3.getSignedUrl('getObject', s3_params, function(err, url){
         if(err) {
