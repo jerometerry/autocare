@@ -42,7 +42,7 @@ router.get('/files/uploadurl', function(req, res) {
     };
     s3.getSignedUrl('putObject', s3_params, function(err, url){
         if(err) {
-            res.write(JSON.stringify({}));
+            res.write(JSON.stringify({ error: err }));
             res.end();
         }
         else {
@@ -66,7 +66,7 @@ router.get('/files/downloadurl', function(req, res) {
     };
     s3.getSignedUrl('getObject', s3_params, function(err, url){
         if(err) {
-            res.write(JSON.stringify({}));
+            res.write(JSON.stringify({ error: err }));
             res.end();
         }
         else {
