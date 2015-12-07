@@ -82,15 +82,18 @@
 			}
 
 			function upload_file(file, signed_request, url){
-				$.ajax({
-					method: 'PUT',
-					url: signed_request,
-					crossDomain: true,
-					headers: {'x-amz-acl': 'public-read'},
-					success: function() {
-						alert(url);
+				var xhr = new XMLHttpRequest();
+				xhr.open("PUT", signed_request);
+				xhr.setRequestHeader('x-amz-acl', 'public-read');
+				xhr.onload = function() {
+					if (xhr.status === 200) {
+						alert('file uploaded');
 					}
-				});
+				};
+				xhr.onerror = function() {
+					alert("Could not upload file.");
+				};
+				xhr.send(file);
 			}
 		</script>
 	</body>
