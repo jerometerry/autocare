@@ -11,8 +11,6 @@ var AWS_ACCESS_KEY = process.env.S3_AWS_ACCESS_KEY_ID;
 var AWS_SECRET_KEY = process.env.S3_AWS_SECRET_KEY;
 var S3_BUCKET = process.env.S3_BUCKET;
 
-aws.config.update({accessKeyId: AWS_ACCESS_KEY, secretAccessKey: AWS_SECRET_KEY});
-
 var app = express();
 var router = express.Router();
 
@@ -33,6 +31,7 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/files/uploadurl', function(req, res) {
+    aws.config.update({accessKeyId: AWS_ACCESS_KEY, secretAccessKey: AWS_SECRET_KEY});
     var s3 = new aws.S3();
     var s3_params = {
         Bucket: S3_BUCKET,
@@ -43,7 +42,8 @@ router.get('/files/uploadurl', function(req, res) {
     };
     s3.getSignedUrl('putObject', s3_params, function(err, url){
         if(err) {
-            console.log(err);
+            res.write(JSON.stringify({}));
+            res.end();
         }
         else {
             var return_data = {
@@ -56,17 +56,18 @@ router.get('/files/uploadurl', function(req, res) {
 });
 
 router.get('/files/downloadurl', function(req, res) {
+    aws.config.update({accessKeyId: AWS_ACCESS_KEY, secretAccessKey: AWS_SECRET_KEY});
     var s3 = new aws.S3();
     var s3_params = {
         Bucket: S3_BUCKET,
         Key: req.query.file_name,
         Expires: 60,
-        ContentType: req.query.file_type,
         ACL: 'public-read'
     };
     s3.getSignedUrl('getObject', s3_params, function(err, url){
         if(err) {
-            console.log(err);
+            res.write(JSON.stringify({}));
+            res.end();
         }
         else {
             var return_data = {
