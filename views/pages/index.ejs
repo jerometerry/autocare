@@ -84,7 +84,7 @@
 						return false;
 					});
 					
-					$("#file_list").on("click", "#file_list a", function(){
+					$(document).on("click", ".s3-file-link", function(){
 						var file = $(this).text();
 						alert('you want to download ' + file + '?');
 					});
@@ -128,7 +128,7 @@
 							var files$ = $("#file_list");
 							files$.empty();
 							response.forEach(function(element, index) {
-								var download_link$ = $("<a href='#'/>").text(element.key);
+								var download_link$ = $("<a class='s3-file-link' href='#'/>").text(element.key);
 								var item$ = $("<li/>").append(download_link$);
 								files$.append(item$);
 							});
