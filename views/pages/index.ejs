@@ -74,7 +74,7 @@
 					$("#file_input").on("change", function(){
 						var file = this.files[0];
 						if (file) {
-							get_signed_request(file);
+							get_upload_url(file, upload_file);
 						}
 					});
 					
@@ -88,18 +88,18 @@
 				});
 			})();
 		
-			function get_signed_request(file) {
-				var url = "/sign_s3?file_name="+file.name+"&file_type="+file.type;
+			function get_upload_url(file, callback) {
+				var url = "/files/uploadurl?file_name="+file.name+"&file_type="+file.type;
 				$.ajax({
 					dataType: 'json',
 					url: url,
 					success: function(response) {
-						upload_file(file, response.signed_request, response.url);
+						callback(file, response.signed_request);
 					}
 				});
 			}
 
-			function upload_file(file, signed_request, url){
+			function upload_file(file, signed_request) {
 				var xhr = new XMLHttpRequest();
 				xhr.open("PUT", signed_request);
 				xhr.setRequestHeader('x-amz-acl', 'public-read');
@@ -122,9 +122,9 @@
 						if (response) {
 							var files$ = $("#file_list");
 							files$.empty();
-							response.forEach(function(element, index){
-								var key = element.key;
-								var item$ = $("<li/>").text(key);
+							response.forEach(function(element, index) {
+								var download_link$ = $("<a href='#'/>").text(element.key);
+								var item$ = $("<li/>").append(download_link$);
 								files$.append(item$);
 							});
 						}

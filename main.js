@@ -32,7 +32,7 @@ router.get('/', function(req, res, next) {
   res.render('pages/index', { title: 'Express' });
 });
 
-router.get('/sign_s3', function(req, res) {
+router.get('/files/uploadurl', function(req, res) {
     var s3 = new aws.S3();
     var s3_params = {
         Bucket: S3_BUCKET,
