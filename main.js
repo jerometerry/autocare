@@ -11,6 +11,8 @@ var AWS_ACCESS_KEY = process.env.S3_AWS_ACCESS_KEY_ID;
 var AWS_SECRET_KEY = process.env.S3_AWS_SECRET_KEY;
 var S3_BUCKET = process.env.S3_BUCKET;
 
+aws.config.update({accessKeyId: AWS_ACCESS_KEY, secretAccessKey: AWS_SECRET_KEY});
+
 var app = express();
 var router = express.Router();
 
@@ -31,7 +33,6 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/sign_s3', function(req, res) {
-    aws.config.update({accessKeyId: AWS_ACCESS_KEY, secretAccessKey: AWS_SECRET_KEY});
     var s3 = new aws.S3();
     var s3_params = {
         Bucket: S3_BUCKET,
@@ -55,12 +56,22 @@ router.get('/sign_s3', function(req, res) {
     });
 });
 
-router.get('/files', function(req, res){
-    aws.config.update({accessKeyId: AWS_ACCESS_KEY, secretAccessKey: AWS_SECRET_KEY});
+router.get('/files', function(req, res) {
     var s3 = new aws.S3({ params: { Bucket: S3_BUCKET } });
     s3.listObjects(function(err, data){
         if (data) {
-            res.write(JSON.stringify(data));
+            var files = [];
+            for (var i = 0; i < data.Contents.length; i++) {
+                var item = data.Contents[i];
+                var key = item.Key;
+                var size = item.Size;
+                files[i] = {
+                    key: key,
+                    size: size
+                };
+            }
+            
+            res.write(JSON.stringify(files));
             res.end();
         }
         else {

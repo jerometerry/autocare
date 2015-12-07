@@ -119,11 +119,11 @@
 					dataType: 'json',
 					url: '/files',
 					success: function(response) {
-						if (response && response.Contents) {
+						if (response) {
 							var files$ = $("#file_list");
 							files$.empty();
-							response.Contents.forEach(function(element, index){
-								var key = element.Key;
+							response.forEach(function(element, index){
+								var key = element.key;
 								var item$ = $("<li/>").text(key);
 								files$.append(item$);
 							});
