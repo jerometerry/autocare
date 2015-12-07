@@ -94,14 +94,14 @@
 					dataType: 'json',
 					url: url,
 					success: function(response) {
-						callback(file, response.signed_request);
+						callback(file, response.url);
 					}
 				});
 			}
 
-			function upload_file(file, signed_request) {
+			function upload_file(file, url) {
 				var xhr = new XMLHttpRequest();
-				xhr.open("PUT", signed_request);
+				xhr.open("PUT", url);
 				xhr.setRequestHeader('x-amz-acl', 'public-read');
 				xhr.onload = function() {
 					if (xhr.status === 200) {
