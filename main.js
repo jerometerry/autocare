@@ -30,7 +30,7 @@ router.get('/', function(req, res, next) {
   res.render('pages/index', { title: 'Express' });
 });
 
-router.get('/sign_s3', function(req, res){
+router.get('/sign_s3', function(req, res) {
     aws.config.update({accessKeyId: AWS_ACCESS_KEY, secretAccessKey: AWS_SECRET_KEY});
     var s3 = new aws.S3();
     var s3_params = {
@@ -41,10 +41,10 @@ router.get('/sign_s3', function(req, res){
         ACL: 'public-read'
     };
     s3.getSignedUrl('putObject', s3_params, function(err, data){
-        if(err){
+        if(err) {
             console.log(err);
         }
-        else{
+        else {
             var return_data = {
                 signed_request: data,
                 url: 'https://'+S3_BUCKET+'.s3.amazonaws.com/'+req.query.file_name
