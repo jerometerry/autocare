@@ -84,6 +84,7 @@
 					url: url,
 					method: 'PUT',
 					data: signed_request,
+					dataType: 'json',
 					headers: {'x-amz-acl': 'public-read'},
 					success: function() {
 						alert(url);
