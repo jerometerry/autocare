@@ -83,7 +83,7 @@
 				$.ajax({
 					url: url,
 					method: 'PUT',
-					data: signed_request,
+					data: JSON.stringify(signed_request),
 					dataType: 'json',
 					headers: {'x-amz-acl': 'public-read'},
 					success: function() {
