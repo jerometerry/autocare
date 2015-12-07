@@ -80,9 +80,14 @@ router.get('/files/downloadurl', function(req, res) {
 });
 
 router.get('/files', function(req, res) {
+    aws.config.update({accessKeyId: AWS_ACCESS_KEY, secretAccessKey: AWS_SECRET_KEY});
     var s3 = new aws.S3({ params: { Bucket: S3_BUCKET } });
     s3.listObjects(function(err, data){
-        if (data) {
+        if(err) {
+            res.write(JSON.stringify({ error: err }));
+            res.end();
+        }
+        else {
             var files = [];
             for (var i = 0; i < data.Contents.length; i++) {
                 var item = data.Contents[i];
@@ -95,10 +100,6 @@ router.get('/files', function(req, res) {
             }
             
             res.write(JSON.stringify(files));
-            res.end();
-        }
-        else {
-            res.write(JSON.stringify({}));
             res.end();
         }
     });
