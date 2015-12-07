@@ -84,7 +84,7 @@
 						return false;
 					});
 					
-					$("#file_list a").click(function(){
+					$("#file_list").on("click", "#file_list a", function(){
 						var file = $(this).text();
 						alert('you want to download ' + file + '?');
 					});
