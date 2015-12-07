@@ -84,6 +84,11 @@
 						return false;
 					});
 					
+					$("#file_list a").click(function(){
+						var file = $(this).text();
+						alert('you want to download ' + file + '?');
+					});
+					
 					refreshFileList();
 				});
 			})();
