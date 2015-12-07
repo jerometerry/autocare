@@ -47,7 +47,8 @@
 			</div>
 			
 			<div>
-				<div id="file_list" class="container">
+				<div id="file_list_container" class="container">
+					<ul id="file_list" />
 				</div>
 					
 				<form id="file_list_form">
@@ -123,7 +124,7 @@
 							files$.empty();
 							response.Contents.forEach(function(element, index){
 								var key = element.Key;
-								var item$ = $("<div/>").text(key);
+								var item$ = $("<li/>").text(key);
 								files$.append(item$);
 							});
 						}
