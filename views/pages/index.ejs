@@ -61,7 +61,7 @@
 				<h2>Upload Files</h2>
 				<div class="container">
 					<input type="file" id="file_input" name="file" />
-					<button id="upload_file_btn">Refresh File List</button>
+					<button id="upload_file_btn">Upload</button>
 				</div>
 			</div>
 		</div>
@@ -136,10 +136,10 @@
 					dataType: 'json',
 					url: '/files',
 					success: function(response) {
-						if (response) {
+						if (response && response.files && Array.isArray(response.files)) {
 							var files$ = $("#file_list");
 							files$.empty();
-							response.forEach(function(element, index) {
+							response.files.forEach(function(element, index) {
 								var download_link$ = $("<a class='s3-file-link' href='#'/>").text(element.key);
 								var item$ = $("<li/>").append(download_link$);
 								files$.append(item$);

@@ -42,14 +42,11 @@ router.get('/files/uploadurl', function(req, res) {
     };
     s3.getSignedUrl('putObject', s3_params, function(err, url){
         if(err) {
-            res.write(JSON.stringify({ error: err }));
+            res.write(JSON.stringify( { url: null, error: err } ));
             res.end();
         }
         else {
-            var return_data = {
-                url: url
-            };
-            res.write(JSON.stringify(return_data));
+            res.write(JSON.stringify( { url: url } ));
             res.end();
         }
     });
@@ -65,14 +62,11 @@ router.get('/files/downloadurl', function(req, res) {
     };
     s3.getSignedUrl('getObject', s3_params, function(err, url){
         if(err) {
-            res.write(JSON.stringify({ error: err }));
+            res.write(JSON.stringify( { url: null, error: err } ));
             res.end();
         }
         else {
-            var return_data = {
-                url: url
-            };
-            res.write(JSON.stringify(return_data));
+            res.write(JSON.stringify( { url: url } ));
             res.end();
         }
     });
@@ -83,7 +77,7 @@ router.get('/files', function(req, res) {
     var s3 = new aws.S3({ params: { Bucket: S3_BUCKET } });
     s3.listObjects(function(err, data){
         if(err) {
-            res.write(JSON.stringify({ error: err }));
+            res.write(JSON.stringify({ files: null, error: err }));
             res.end();
         }
         else {
@@ -98,7 +92,7 @@ router.get('/files', function(req, res) {
                 };
             }
             
-            res.write(JSON.stringify(files));
+            res.write(JSON.stringify( { files: files } ));
             res.end();
         }
     });
