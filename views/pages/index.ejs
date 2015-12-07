@@ -19,7 +19,9 @@
 		<nav class="navbar navbar-inverse navbar-fixed-top">
 			<div class="container">
 				<div class="navbar-header">
-				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<button type="button" class="navbar-toggle collapsed" 
+						data-toggle="collapse" data-target="#navbar" 
+						aria-expanded="false" aria-controls="navbar">
 					<span class="sr-only">Toggle navigation</span>
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
@@ -33,7 +35,7 @@
 					<li><a href="#about">About</a></li>
 					<li><a href="#contact">Contact</a></li>
 				</ul>
-				</div><!--/.nav-collapse -->
+				</div>
 			</div>
 			</nav>
 		
@@ -41,7 +43,8 @@
 		
 			<div class="starter-template">
 				<h1>Bootstrap starter template</h1>
-				<p class="lead">Use this document as a way to quickly start any new project.<br> All you get is this text and a mostly barebones HTML document.</p>
+				<p class="lead">Use this document as a way to quickly start any new project.<br> 
+				All you get is this text and a mostly barebones HTML document.</p>
 			</div>
 			
 			<div>
@@ -49,8 +52,7 @@
 					<input type="file" id="file_input" name="file" />
 				</form>
 			</div>
-		
-			</div><!-- /.container -->
+		</div>
 		
 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" 
@@ -80,18 +82,15 @@
 			}
 
 			function upload_file(file, signed_request, url){
-				var xhr = new XMLHttpRequest();
-				xhr.open("PUT", signed_request);
-				xhr.setRequestHeader('x-amz-acl', 'public-read');
-				xhr.onload = function() {
-					if (xhr.status === 200) {
+				$.ajax({
+					method: 'PUT',
+					url: signed_request,
+					crossDomain: true,
+					headers: {'x-amz-acl': 'public-read'},
+					success: function() {
 						alert(url);
 					}
-				};
-				xhr.onerror = function() {
-					alert("Could not upload file.");
-				};
-				xhr.send(file);
+				});
 			}
 		</script>
 	</body>
