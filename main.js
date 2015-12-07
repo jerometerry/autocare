@@ -55,6 +55,21 @@ router.get('/sign_s3', function(req, res) {
     });
 });
 
+router.get('/files', function(req, res){
+    aws.config.update({accessKeyId: AWS_ACCESS_KEY, secretAccessKey: AWS_SECRET_KEY});
+    var s3 = new aws.S3({ params: { Bucket: S3_BUCKET } });
+    s3.listObjects(function(err, data){
+        if (data) {
+            res.write(JSON.stringify(data));
+            res.end();
+        }
+        else {
+            res.write(JSON.stringify({}));
+            res.end();
+        }
+    });
+});
+
 app.use('/', router);
 
 // catch 404 and forward to error handler

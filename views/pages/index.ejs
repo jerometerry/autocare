@@ -48,7 +48,16 @@
 			</div>
 			
 			<div>
-				<form id="filepicker">
+					<form id="file_list_form">
+							<input type="submit" id="refresh_files" name="refresh_files" />
+					</form>
+					
+					<div id="file_list">
+					</dov>
+			</div>
+			
+			<div>
+				<form id="file_uploader_form">
 					<input type="file" id="file_input" name="file" />
 				</form>
 			</div>
@@ -61,13 +70,20 @@
 			
 		<script type=text/javascript>
 			(function() {
-				$("#file_input").on("change", function(){
-					var file = this.files[0];
-					if (file) {
-						get_signed_request(file);
-					}
+				$(document).ready(function(){
+					$("#file_input").on("change", function(){
+						var file = this.files[0];
+						if (file) {
+							get_signed_request(file);
+						}
+					});
+					
+					$("#refresh_files").click(function(e){
+						e.preventDefault();
+						refreshFileList();
+						return false;
+					});
 				});
-				
 			})();
 		
 			function get_signed_request(file) {
@@ -94,6 +110,16 @@
 					alert("Could not upload file.");
 				};
 				xhr.send(file);
+			}
+			
+			function refreshFileList() {
+				$.ajax({
+					dataType: 'json',
+					url: '/files',
+					success: function(response) {
+						alert(response);
+					}
+				});
 			}
 		</script>
 	</body>
