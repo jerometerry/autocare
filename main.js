@@ -70,7 +70,7 @@ router.get('/files/downloadurl', function(req, res) {
 router.get('/tables', function(req, res) {
     aws.config.update( { accessKeyId: AWS_ACCESS_KEY, secretAccessKey: AWS_SECRET_KEY } );
     aws.config.update( { region: 'us-east-1' } ); 
-    var db = new AWS.DynamoDB();
+    var db = new aws.DynamoDB();
     db.listTables(function(err, data) {
         if (err) {
             res.write(JSON.stringify( { tables: null, error: err } ));
