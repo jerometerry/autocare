@@ -70,7 +70,7 @@ router.get('/files/downloadurl', function(req, res) {
 router.get('/metadata', function(req, res) {
     aws.config.update( { accessKeyId: AWS_ACCESS_KEY, secretAccessKey: AWS_SECRET_KEY } );
     aws.config.update( { region: 'us-east-1' } ); 
-    var dynamodbDoc = new AWS.DynamoDB.DocumentClient();
+    var dynamodbDoc = new aws.DynamoDB.DocumentClient();
     var params = {
         TableName : "AutocareFiles"
     };
