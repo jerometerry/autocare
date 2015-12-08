@@ -95,7 +95,6 @@
 					});
 
 					refreshFileList();
-					getMetadata();
 				});
 			})();
 
@@ -163,24 +162,15 @@
 
 				$.ajax({
 					dataType: 'json',
-					url: '/files',
+					url: '/metadata',
 					success: function(response) {
-						if (response && response.files && Array.isArray(response.files)) {
-							response.files.forEach(function(element, index) {
-								var download_link$ = $("<a class='s3-file-link' href='#'/>").text(element.key);
+						if (response && response.results && response.results.Items && Array.isArray(response.results.Items)) {
+							response.results.Items.forEach(function(element, index) {
+								var download_link$ = $("<a class='s3-file-link' href='#'/>").text(element.ObjectKey);
 								var item$ = $("<li/>").append(download_link$);
 								files$.append(item$);
 							});
 						}
-					}
-				});
-			}
-
-			function getMetadata() {
-				$.ajax({
-					dataType: 'json',
-					url: '/metadata',
-					success: function(response) {
 					}
 				});
 			}
