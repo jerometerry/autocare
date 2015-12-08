@@ -96,6 +96,11 @@
 		<script type="text/javascript">
 			(function() {
 				$(document).ready(function(){
+					wireUpControls();
+					refreshFileList();
+				});
+
+				function wireUpControls() {
 					$("#upload_file_btn").click(function(e) {
 						e.preventDefault();
 						var file = document.getElementById('file_input').files[0];
@@ -115,117 +120,121 @@
 						downloadFile(file);
 						return false;
 					});
-
-					refreshFileList();
-				});
-			})();
-
-			function uploadFile(file) {
-				if (!file) {
-					alert('No file selected');
-					return;
 				}
 
-				onUploadStarted();
-				var getFileUploadUrl = "/files/uploadurl?file_name="+file.name+"&file_type="+file.type;
-				$.ajax({
-					dataType: 'json',
-					url: getFileUploadUrl,
-					success: function(response) {
-						if (response) {
-							if (response.error) {
-								onUploadError();
-							} else if (response.url) {
-								var signedS3UploadUrl = response.url;
-								var xhr = new XMLHttpRequest();
-								xhr.open("PUT", signedS3UploadUrl);
-								xhr.setRequestHeader('x-amz-acl', 'public-read');
-								xhr.onload = function() {
-									if (xhr.status === 200) {
-										onUploadSuccess(file);
-									} else {
-										onUploadError();
-									}
-								};
-								xhr.onerror = function() {
+				function uploadFile(file) {
+					if (!file) {
+						alert('No file selected');
+						return;
+					}
+
+					onUploadStarted();
+					$.ajax({
+						dataType: 'json',
+						url: "/files/uploadurl",
+						data: {
+							file_name: file.name,
+							file_type: file.type
+						},
+						success: function(response) {
+							if (response) {
+								if (response.error) {
 									onUploadError();
-								};
-								xhr.send(file);
+								} else if (response.url) {
+									uploadDirectToS3(response.url, file);
+								} else {
+									onUploadError();
+								}
 							} else {
 								onUploadError();
 							}
+						}, 
+						error: function() {
+							onUploadError();
+						}
+					});
+				}
+
+				function uploadDirectToS3(signedS3UploadUrl, file) {
+					var xhr = new XMLHttpRequest();
+					xhr.open("PUT", signedS3UploadUrl);
+					xhr.setRequestHeader('x-amz-acl', 'public-read');
+					xhr.onload = function() {
+						if (xhr.status === 200) {
+							onUploadSuccess(file);
 						} else {
 							onUploadError();
 						}
-					}, 
-					error: function() {
+					};
+					xhr.onerror = function() {
 						onUploadError();
-					}
-				});
-			}
+					};
+					xhr.send(file);
+				}
 
-			function onUploadError() {
-				hideWaitDialog();
-			}
-            
-            function onUploadStarted() {
-                showWaitDialog();
-            }
+				function onUploadError() {
+					hideWaitDialog();
+				}
 
-			function onUploadSuccess(file) {
-				addMetadata(file);
-				refreshFileList();
-				hideWaitDialog();
-			}
+				function onUploadStarted() {
+					showWaitDialog();
+				}
 
-			function showWaitDialog() {
-				$('#myPleaseWait').modal('show');
-			}
-			
-			function hideWaitDialog() {
-				$('#myPleaseWait').modal('hide');
-			}
+				function onUploadSuccess(file) {
+					addMetadata(file);
+					refreshFileList();
+					hideWaitDialog();
+				}
 
-			function downloadFile(file) {
-				var url = "/files/downloadurl?file_name="+file;
-				$.ajax({
-					dataType: 'json',
-					url: url,
-					success: function(response) {
-						window.open(response.url, '_blank');
-					}
-				});
-			}
+				function showWaitDialog() {
+					$('#myPleaseWait').modal('show');
+				}
 
-			function refreshFileList() {
-				var files$ = $("#file_list");
-				files$.empty();
+				function hideWaitDialog() {
+					$('#myPleaseWait').modal('hide');
+				}
 
-				$.ajax({
-					dataType: 'json',
-					url: '/metadata',
-					success: function(response) {
-						if (response && response.results && response.results.Items && Array.isArray(response.results.Items)) {
-							response.results.Items.forEach(function(element, index) {
-								var download_link$ = $("<a class='s3-file-link' href='#'/>").text(element.ObjectKey);
-								var item$ = $("<li/>").append(download_link$);
-								files$.append(item$);
-							});
+				function downloadFile(file) {
+					var url = "/files/downloadurl?file_name="+file;
+					$.ajax({
+						dataType: 'json',
+						url: url,
+						success: function(response) {
+							window.open(response.url, '_blank');
 						}
-					}
-				});
-			}
+					});
+				}
 
-			function addMetadata(file) {
-				$.ajax({
-					dataType: 'json',
-					url: '/metadata',
-					method: 'PUT',
-					data: { file_name: file.name },
-					success: function(response) {
-					}
-				});
-			}
+				function refreshFileList() {
+					var files$ = $("#file_list");
+					files$.empty();
+
+					$.ajax({
+						dataType: 'json',
+						url: '/metadata',
+						success: function(response) {
+							if (response && response.results && response.results.Items && Array.isArray(response.results.Items)) {
+								response.results.Items.forEach(function(element, index) {
+									var download_link$ = $("<a class='s3-file-link' href='#'/>").text(element.ObjectKey);
+									var item$ = $("<li/>").append(download_link$);
+									files$.append(item$);
+								});
+							}
+						}
+					});
+				}
+
+				function addMetadata(file) {
+					$.ajax({
+						dataType: 'json',
+						url: '/metadata',
+						method: 'PUT',
+						data: { file_name: file.name },
+						success: function(response) {
+						}
+					});
+				}
+			})();
 		</script>
 	</body>
 </html>
