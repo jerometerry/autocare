@@ -67,16 +67,19 @@ router.get('/files/downloadurl', function(req, res) {
     });
 });
 
-router.get('/tables', function(req, res) {
+router.get('/metadata', function(req, res) {
     aws.config.update( { accessKeyId: AWS_ACCESS_KEY, secretAccessKey: AWS_SECRET_KEY } );
     aws.config.update( { region: 'us-east-1' } ); 
-    var db = new aws.DynamoDB();
-    db.listTables(function(err, data) {
+    var dynamodbDoc = new AWS.DynamoDB.DocumentClient();
+    var params = {
+        TableName : "AutocareFiles"
+    };
+    dynamodbDoc.query(params, function(err, data) {
         if (err) {
             res.write(JSON.stringify( { tables: null, error: err } ));
             res.end();
         } else {
-            res.write(JSON.stringify( { tables: data } ));
+            res.write(JSON.stringify( { results: data } ));
             res.end();
         }
     });

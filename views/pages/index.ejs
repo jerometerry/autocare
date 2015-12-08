@@ -95,7 +95,7 @@
 					});
 					
 					refreshFileList();
-					getTables();
+					getMetadata();
 				});
 			})();
 		
@@ -175,10 +175,10 @@
 				});
 			}
 			
-			function getTables() {
+			function getMetadata() {
 				$.ajax({
 					dataType: 'json',
-					url: '/tables',
+					url: '/metadata',
 					success: function(response) {
 					}
 				});
