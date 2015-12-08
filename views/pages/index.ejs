@@ -3,9 +3,9 @@
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		
+
 		<title>Autocare</title>
-		
+
 		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 		<link href="stylesheets/starter-template.css" rel="stylesheet">
 	</head>
@@ -33,7 +33,7 @@
 				</div>
 			</div>
 		</nav>
-		
+
 		<div class="container">
 			<div class="starter-template">
 				<h1>Autocare File Management</h1>
@@ -41,111 +41,111 @@
 					and for access from anywhere!
 				</p>
 			</div>
-			
+
 			<div class="container">
 				<h2>File List</h2>
-				
+
 				<div class="container">
 					<div class="row`">
 						<ul id="file_list" />
 					</div>
 					<div class="row">
 						<button id="refresh_files_btn" class="btn-primary">Refresh File List</button>
-                    </div>
+					</div>
 				</div>	
 			</div>
-			
+
 			<div class="container">
 				<h2>Upload Files</h2>
 				<div class="container">
-                    <div class="row">
-                    	<input type="file" id="file_input" name="file" />
+					<div class="row">
+						<input type="file" id="file_input" name="file" />
 					</div>
-                    <div class="row" style="padding-top: 10px;">
-                    	<button id="upload_file_btn" class="btn-primary">Upload</button>
-                    </div>
+					<div class="row" style="padding-top: 10px;">
+						<button id="upload_file_btn" class="btn-primary">Upload</button>
+					</div>
 				</div>
 			</div>
 		</div>
-		
+
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 		<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-			
+
 		<script type=text/javascript>
 			(function() {
 				$(document).ready(function(){
 					$("#upload_file_btn").click(function(e) {
-                        e.preventDefault();
+						e.preventDefault();
 						var file = document.getElementById('file_input').files[0];
-                        uploadFile(file);
-                        return false;
+						uploadFile(file);
+						return false;
 					});
-					
+
 					$("#refresh_files").click(function(e) {
 						e.preventDefault();
 						refreshFileList();
 						return false;
 					});
-					
+
 					$(document).on("click", ".s3-file-link", function(e) {
-                        e.preventDefault();
+						e.preventDefault();
 						var file = $(this).text();
 						downloadFile(file);
-                        return false;
+						return false;
 					});
-					
+
 					refreshFileList();
 					getMetadata();
 				});
 			})();
-		
+
 			function uploadFile(file) {
 				if (!file) {
-                    alert('No file selected');
-                    return;
-                }
-                
-                var getFileUploadUrl = "/files/uploadurl?file_name="+file.name+"&file_type="+file.type;
+					alert('No file selected');
+					return;
+				}
+
+				var getFileUploadUrl = "/files/uploadurl?file_name="+file.name+"&file_type="+file.type;
 				$.ajax({
 					dataType: 'json',
 					url: getFileUploadUrl,
 					success: function(response) {
-                        if (response) {
-                            if (response.error) {
-                                onUploadError();
-                            } else if (response.url) {
-                                var signedS3UploadUrl = response.url;
-                                var xhr = new XMLHttpRequest();
-                                xhr.open("PUT", signedS3UploadUrl);
-                                xhr.setRequestHeader('x-amz-acl', 'public-read');
-                                xhr.onload = function() {
-                                    if (xhr.status === 200) {
-                                        onUploadSuccess(file);
-                                    } else {
-                                        onUploadError();
-                                    }
-                                };
-                                xhr.onerror = function() {
-                                    onUploadError();
-                                };
-                                xhr.send(file);
-                            } else {
-                                onUploadError();
-                            }
-                        }
+						if (response) {
+							if (response.error) {
+								onUploadError();
+							} else if (response.url) {
+								var signedS3UploadUrl = response.url;
+								var xhr = new XMLHttpRequest();
+								xhr.open("PUT", signedS3UploadUrl);
+								xhr.setRequestHeader('x-amz-acl', 'public-read');
+								xhr.onload = function() {
+									if (xhr.status === 200) {
+										onUploadSuccess(file);
+									} else {
+										onUploadError();
+									}
+								};
+								xhr.onerror = function() {
+									onUploadError();
+								};
+								xhr.send(file);
+							} else {
+								onUploadError();
+							}
+						}
 					}
 				});
 			}
-            
-            function onUploadError() {
-                alert('There was an error uploading the file.');
-            }
-            
-            function onUploadSuccess(file) {
+
+			function onUploadError() {
+				alert('There was an error uploading the file.');
+			}
+
+			function onUploadSuccess(file) {
 				addMetadata(file);
-                refreshFileList();
-            }
-			
+				refreshFileList();
+			}
+
 			function downloadFile(file) {
 				var url = "/files/downloadurl?file_name="+file;
 				$.ajax({
@@ -156,11 +156,11 @@
 					}
 				});
 			}
-			
+
 			function refreshFileList() {
-                var files$ = $("#file_list");
+				var files$ = $("#file_list");
 				files$.empty();
-                            
+
 				$.ajax({
 					dataType: 'json',
 					url: '/files',
@@ -175,7 +175,7 @@
 					}
 				});
 			}
-			
+
 			function getMetadata() {
 				$.ajax({
 					dataType: 'json',
@@ -184,7 +184,7 @@
 					}
 				});
 			}
-			
+
 			function addMetadata(file) {
 				$.ajax({
 					dataType: 'json',
