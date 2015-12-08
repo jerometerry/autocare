@@ -6,8 +6,8 @@ var express = require('express'),
     ejs = require('ejs'),
     aws = require('aws-sdk');
 
-var AWS_ACCESS_KEY = process.env.S3_AWS_ACCESS_KEY_ID;
-var AWS_SECRET_KEY = process.env.S3_AWS_SECRET_KEY;
+var AWS_ACCESS_KEY = process.env.AWS_ACCESS_KEY_ID;
+var AWS_SECRET_KEY = process.env.AWS_SECRET_KEY;
 var S3_BUCKET = process.env.S3_BUCKET;
 
 var app = express();
