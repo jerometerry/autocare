@@ -190,7 +190,7 @@
 					dataType: 'json',
 					url: '/metadata',
 					method: 'PUT',
-					data: JSON.stringify({ file_name: file.name }),
+					data: { file_name: file.name },
 					success: function(response) {
 					}
 				});
