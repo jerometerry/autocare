@@ -67,11 +67,33 @@
 				</div>
 			</div>
 		</div>
+        
+        <div class="modal fade bs-example-modal-sm" id="myPleaseWait" tabindex="-1"
+            role="dialog" aria-hidden="true" data-backdrop="static">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">
+                            <span class="glyphicon glyphicon-time">
+                            </span>Please Wait
+                         </h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="progress">
+                            <div class="progress-bar progress-bar-info
+                            progress-bar-striped active"
+                            style="width: 100%">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 		<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 
-		<script type=text/javascript>
+		<script type="text/javascript">
 			(function() {
 				$(document).ready(function(){
 					$("#upload_file_btn").click(function(e) {
@@ -104,6 +126,7 @@
 					return;
 				}
 
+				onUploadStarted();
 				var getFileUploadUrl = "/files/uploadurl?file_name="+file.name+"&file_type="+file.type;
 				$.ajax({
 					dataType: 'json',
@@ -131,18 +154,36 @@
 							} else {
 								onUploadError();
 							}
+						} else {
+							onUploadError();
 						}
+					}, 
+					error: function() {
+						onUploadError();
 					}
 				});
 			}
 
 			function onUploadError() {
-				alert('There was an error uploading the file.');
+				hideWaitDialog();
 			}
+            
+            function onUploadStarted() {
+                showWaitDialog();
+            }
 
 			function onUploadSuccess(file) {
 				addMetadata(file);
 				refreshFileList();
+				hideWaitDialog();
+			}
+
+			function showWaitDialog() {
+				$('#myPleaseWait').modal('show');
+			}
+			
+			function hideWaitDialog() {
+				$('#myPleaseWait').modal('hide');
 			}
 
 			function downloadFile(file) {
