@@ -76,10 +76,32 @@ router.get('/metadata', function(req, res) {
     };
     dynamodbDoc.scan(params, function(err, data) {
         if (err) {
-            res.write(JSON.stringify( { tables: null, error: err } ));
+            res.write(JSON.stringify( { results: null, error: err } ));
             res.end();
         } else {
             res.write(JSON.stringify( { results: data } ));
+            res.end();
+        }
+    });
+});
+
+router.put('/metadata', function(req, res) {
+    var file = req.body.file_name;
+    aws.config.update( { accessKeyId: AWS_ACCESS_KEY, secretAccessKey: AWS_SECRET_KEY } );
+    aws.config.update( { region: 'us-east-1' } ); 
+    var dynamodbDoc = new aws.DynamoDB.DocumentClient();
+    var params = {
+        TableName : "AutocareFiles",
+        Item: {
+            ObjectKey: file
+        }
+    };
+    dynamodbDoc.put(params, function(err, data) {
+        if (err) {
+            res.write(JSON.stringify( { success: false, error: err } ));
+            res.end();
+        } else {
+            res.write(JSON.stringify( { success: true, results: data } ));
             res.end();
         }
     });

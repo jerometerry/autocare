@@ -120,7 +120,7 @@
                                 xhr.setRequestHeader('x-amz-acl', 'public-read');
                                 xhr.onload = function() {
                                     if (xhr.status === 200) {
-                                        onUploadSuccess();
+                                        onUploadSuccess(file);
                                     } else {
                                         onUploadError();
                                     }
@@ -141,7 +141,8 @@
                 alert('There was an error uploading the file.');
             }
             
-            function onUploadSuccess() {
+            function onUploadSuccess(file) {
+				addMetadata(file);
                 refreshFileList();
             }
 			
@@ -179,6 +180,17 @@
 				$.ajax({
 					dataType: 'json',
 					url: '/metadata',
+					success: function(response) {
+					}
+				});
+			}
+			
+			function addMetadata(file) {
+				$.ajax({
+					dataType: 'json',
+					url: '/metadata',
+					method: 'PUT',
+					data: JSON.stringify({ file_name: file.name }),
 					success: function(response) {
 					}
 				});
