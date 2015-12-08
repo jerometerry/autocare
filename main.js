@@ -41,8 +41,7 @@ router.get('/files/uploadurl', function(req, res) {
         if(err) {
             res.write(JSON.stringify( { url: null, error: err } ));
             res.end();
-        }
-        else {
+        } else {
             res.write(JSON.stringify( { url: url } ));
             res.end();
         }
@@ -61,23 +60,37 @@ router.get('/files/downloadurl', function(req, res) {
         if(err) {
             res.write(JSON.stringify( { url: null, error: err } ));
             res.end();
-        }
-        else {
+        } else {
             res.write(JSON.stringify( { url: url } ));
             res.end();
         }
     });
 });
 
+router.get('/tables', function(req, res) {
+    aws.config.update( { accessKeyId: AWS_ACCESS_KEY, secretAccessKey: AWS_SECRET_KEY } );
+    aws.config.update( { region: 'us-east-1' } ); 
+    var db = new AWS.DynamoDB();
+    db.listTables(function(err, data) {
+        if (err) {
+            res.write(JSON.stringify( { tables: null, error: err } ));
+            res.end();
+        } else {
+            res.write(JSON.stringify( { tables: data } ));
+            res.end();
+        }
+    });
+});
+
 router.get('/files', function(req, res) {
-    aws.config.update({accessKeyId: AWS_ACCESS_KEY, secretAccessKey: AWS_SECRET_KEY});
+    aws.config.update( { accessKeyId: AWS_ACCESS_KEY, secretAccessKey: AWS_SECRET_KEY } );
+    
     var s3 = new aws.S3({ params: { Bucket: S3_BUCKET } });
     s3.listObjects(function(err, data){
         if(err) {
             res.write(JSON.stringify({ files: null, error: err }));
             res.end();
-        }
-        else {
+        } else {
             var files = [];
             for (var i = 0; i < data.Contents.length; i++) {
                 var item = data.Contents[i];

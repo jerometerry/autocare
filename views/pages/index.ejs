@@ -95,6 +95,7 @@
 					});
 					
 					refreshFileList();
+					getTables();
 				});
 			})();
 		
@@ -112,8 +113,7 @@
                         if (response) {
                             if (response.error) {
                                 onUploadError();
-                            }
-                            else if (response.url) {
+                            } else if (response.url) {
                                 var signedS3UploadUrl = response.url;
                                 var xhr = new XMLHttpRequest();
                                 xhr.open("PUT", signedS3UploadUrl);
@@ -121,8 +121,7 @@
                                 xhr.onload = function() {
                                     if (xhr.status === 200) {
                                         onUploadSuccess();
-                                    }
-                                    else {
+                                    } else {
                                         onUploadError();
                                     }
                                 };
@@ -130,8 +129,7 @@
                                     onUploadError();
                                 };
                                 xhr.send(file);
-                            }
-                            else {
+                            } else {
                                 onUploadError();
                             }
                         }
@@ -173,6 +171,15 @@
 								files$.append(item$);
 							});
 						}
+					}
+				});
+			}
+			
+			function getTables() {
+				$.ajax({
+					dataType: 'json',
+					url: '/tables',
+					success: function(response) {
 					}
 				});
 			}
