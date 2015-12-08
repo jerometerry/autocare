@@ -74,7 +74,7 @@ router.get('/metadata', function(req, res) {
     var params = {
         TableName : "AutocareFiles"
     };
-    dynamodbDoc.query(params, function(err, data) {
+    dynamodbDoc.scan(params, function(err, data) {
         if (err) {
             res.write(JSON.stringify( { tables: null, error: err } ));
             res.end();
