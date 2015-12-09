@@ -4,14 +4,12 @@ var express = require('express'),
     cookieParser = require('cookie-parser'),
     bodyParser = require('body-parser'),
     ejs = require('ejs'),
-    aws = require('aws-sdk');
-
-var AWS_ACCESS_KEY = process.env.AWS_ACCESS_KEY_ID;
-var AWS_SECRET_KEY = process.env.AWS_SECRET_KEY;
-var S3_BUCKET = process.env.S3_BUCKET;
+	router = require('./routes/index'),
+	passport = require('passport'),
+	LocalStrategy = require('passport-local').Strategy,
+	expressSession = require('express-session');
 
 var app = express();
-var router = express.Router();
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -20,118 +18,29 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(expressSession({
+	secret: 'keyboard cat',
+	resave: true,
+	saveUninitialized: true
+}));
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(express.static(path.join(__dirname, 'public')));
 
-router.get('/', function(req, res, next) {
-	res.render('pages/index', { title: 'Express' });
-});
-
-router.get('/files/uploadurl', function(req, res) {
-	aws.config.update({accessKeyId: AWS_ACCESS_KEY, secretAccessKey: AWS_SECRET_KEY});
-	var s3 = new aws.S3();
-	var s3_params = {
-		Bucket: S3_BUCKET,
-		Key: req.query.file_name,
-		Expires: 60,
-		ContentType: req.query.file_type,
-		ACL: 'public-read'
-	};
-	s3.getSignedUrl('putObject', s3_params, function(err, url){
-		if(err) {
-			res.write(JSON.stringify( { url: null, error: err } ));
-			res.end();
-		} else {
-			res.write(JSON.stringify( { url: url } ));
-			res.end();
-		}
-	});
-});
-
-router.get('/files/downloadurl', function(req, res) {
-	aws.config.update({accessKeyId: AWS_ACCESS_KEY, secretAccessKey: AWS_SECRET_KEY});
-	var s3 = new aws.S3();
-	var s3_params = {
-		Bucket: S3_BUCKET,
-		Key: req.query.file_name,
-		Expires: 60
-	};
-	s3.getSignedUrl('getObject', s3_params, function(err, url){
-		if(err) {
-			res.write(JSON.stringify( { url: null, error: err } ));
-			res.end();
-		} else {
-			res.write(JSON.stringify( { url: url } ));
-			res.end();
-		}
-	});
-});
-
-router.get('/metadata', function(req, res) {
-	aws.config.update( { accessKeyId: AWS_ACCESS_KEY, secretAccessKey: AWS_SECRET_KEY } );
-	aws.config.update( { region: 'us-east-1' } ); 
-	var dynamodbDoc = new aws.DynamoDB.DocumentClient();
-	var params = {
-		TableName : "AutocareFiles"
-	};
-	dynamodbDoc.scan(params, function(err, data) {
-		if (err) {
-			res.write(JSON.stringify( { results: null, error: err } ));
-			res.end();
-		} else {
-			res.write(JSON.stringify( { results: data } ));
-			res.end();
-		}
-	});
-});
-
-router.put('/metadata', function(req, res) {
-	var file = req.body.file_name;
-	aws.config.update( { accessKeyId: AWS_ACCESS_KEY, secretAccessKey: AWS_SECRET_KEY } );
-	aws.config.update( { region: 'us-east-1' } ); 
-	var dynamodbDoc = new aws.DynamoDB.DocumentClient();
-	var params = {
-		TableName : "AutocareFiles",
-		Item: {
-			ObjectKey: file
-		}
-	};
-	dynamodbDoc.put(params, function(err, data) {
-		if (err) {
-			res.write(JSON.stringify( { success: false, error: err } ));
-			res.end();
-		} else {
-			res.write(JSON.stringify( { success: true, results: data } ));
-			res.end();
-		}
-	});
-});
-
-router.get('/files', function(req, res) {
-	aws.config.update( { accessKeyId: AWS_ACCESS_KEY, secretAccessKey: AWS_SECRET_KEY } );
-	var s3 = new aws.S3({ params: { Bucket: S3_BUCKET } });
-	s3.listObjects(function(err, data) {
-		if (err) {
-			res.write(JSON.stringify({ files: null, error: err }));
-			res.end();
-		} else {
-			var files = [];
-			for (var i = 0; i < data.Contents.length; i++) {
-				var item = data.Contents[i];
-				var key = item.Key;
-				var size = item.Size;
-				files[i] = {
-					key: key,
-					size: size
-				};
-			}
-            
-			res.write(JSON.stringify( { files: files } ));
-			res.end();
-		}
-	});
-});
-
 app.use('/', router);
+
+// passport config
+passport.use(new LocalStrategy(function(user, pass, done) {
+	// TODO - lookup user and validate password
+}));
+
+passport.serializeUser(function(user, done) {
+	done(null, user.id);
+});
+
+passport.deserializeUser(function(login, done) {
+	// TODO - fetch user from DynamoDB
+});
 
 app.use(function(req, res, next) {
 	var err = new Error('Not Found');

@@ -22,13 +22,13 @@
 						<span class="icon-bar"></span>
 						<span class="icon-bar"></span>
 					</button>
-					<a class="navbar-brand" href="#">Autocare</a>
+					<a class="navbar-brand" href="/">Autocare</a>
 				</div>
 				<div id="navbar" class="collapse navbar-collapse">
 					<ul class="nav navbar-nav">
-						<li class="active"><a href="#">Home</a></li>
-						<li><a href="#about">About</a></li>
-						<li><a href="#contact">Contact</a></li>
+						<li class="active"><a href="/">Home</a></li>
+						<li><a href="/files">Files</a></li>
+						<li><a href="/login">Log in</a></li>
 					</ul>
 				</div>
 			</div>
@@ -41,213 +41,9 @@
 					and for access from anywhere!
 				</p>
 			</div>
-
-			<div class="container">
-				<h2>File List</h2>
-
-				<div class="container">
-					<div class="row`">
-						<ul id="file_list" />
-					</div>
-					<div class="row">
-						<button id="refresh_files_btn" class="btn-primary">Refresh File List</button>
-					</div>
-				</div>	
-			</div>
-
-			<div class="container">
-				<h2>Upload Files</h2>
-				<div class="container">
-					<div class="row">
-						<input type="file" id="file_input" name="file" />
-					</div>
-					<div class="row" style="padding-top: 10px;">
-						<button id="upload_file_btn" class="btn-primary">Upload</button>
-					</div>
-				</div>
-			</div>
 		</div>
-        
-        <div class="modal fade bs-example-modal-sm" id="myPleaseWait" tabindex="-1"
-            role="dialog" aria-hidden="true" data-backdrop="static">
-            <div class="modal-dialog modal-sm">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title">
-                            <span class="glyphicon glyphicon-time">
-                            </span>Please Wait
-                         </h4>
-                    </div>
-                    <div class="modal-body">
-                        <div class="progress">
-                            <div class="progress-bar progress-bar-info
-                            progress-bar-striped active"
-                            style="width: 100%">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 		<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-
-		<script type="text/javascript">
-			(function() {
-				$(document).ready(function(){
-					wireUpControls();
-					refreshFileList();
-				});
-
-				function wireUpControls() {
-					$("#upload_file_btn").click(function(e) {
-						e.preventDefault();
-						var file = document.getElementById('file_input').files[0];
-						uploadFile(file);
-						return false;
-					});
-
-					$("#refresh_files").click(function(e) {
-						e.preventDefault();
-						refreshFileList();
-						return false;
-					});
-
-					$(document).on("click", ".s3-file-link", function(e) {
-						e.preventDefault();
-						var filename = $(this).text();
-						downloadFile(filename);
-						return false;
-					});
-				}
-
-				function uploadFile(file) {
-					if (!file) {
-						alert('No file selected');
-						return;
-					}
-
-					onUploadStarted();
-					getUploadUrl(file)
-				}
-				
-				function getUploadUrl(file) {
-					$.ajax({
-						dataType: 'json',
-						url: "/files/uploadurl",
-						data: {
-							file_name: file.name,
-							file_type: file.type
-						},
-						success: function(response) {
-							handleGetUploadUrlResponse(response, file);
-						}, 
-						error: function() {
-							onUploadError();
-						}
-					});
-				}
-				
-				function handleGetUploadUrlResponse(response, file) {
-					if (response) {
-						if (response.error) {
-							onUploadError();
-						} else if (response.url) {
-							uploadDirectToS3(response.url, file);
-						} else {
-							onUploadError();
-						}
-					} else {
-						onUploadError();
-					}
-				}
-
-				function uploadDirectToS3(signedS3UploadUrl, file) {
-					var xhr = new XMLHttpRequest();
-					xhr.open("PUT", signedS3UploadUrl);
-					xhr.setRequestHeader('x-amz-acl', 'public-read');
-					xhr.onload = function() {
-						if (xhr.status === 200) {
-							onUploadSuccess(file);
-						} else {
-							onUploadError();
-						}
-					};
-					xhr.onerror = function() {
-						onUploadError();
-					};
-					xhr.send(file);
-				}
-
-				function downloadFile(filename) {
-					$.ajax({
-						dataType: 'json',
-						url: '/files/downloadurl',
-						data: {
-							file_name: filename
-						},
-						success: function(response) {
-							window.open(response.url, '_blank');
-						}
-					});
-				}
-
-				function refreshFileList() {
-					var files$ = $("#file_list").empty();
-					$.ajax({
-						dataType: 'json',
-						url: '/metadata',
-						success: function(response) {
-							handleGetMetadataResponse(response);
-						}
-					});
-				}
-				
-				function handleGetMetadataResponse(response) {
-					if (response && response.results && response.results.Items && Array.isArray(response.results.Items)) {
-						var files$ = $("#file_list");
-						response.results.Items.forEach(function(element, index) {
-							var download_link$ = $("<a class='s3-file-link' href='#'/>").text(element.ObjectKey);
-							var item$ = $("<li/>").append(download_link$);
-							files$.append(item$);
-						});
-					}
-				}
-
-				function addMetadata(file) {
-					$.ajax({
-						dataType: 'json',
-						url: '/metadata',
-						method: 'PUT',
-						data: { file_name: file.name },
-						success: function(response) {
-						}
-					});
-				}
-				
-				function onUploadError() {
-					hideWaitDialog();
-				}
-
-				function onUploadStarted() {
-					showWaitDialog();
-				}
-
-				function onUploadSuccess(file) {
-					addMetadata(file);
-					refreshFileList();
-					hideWaitDialog();
-				}
-
-				function showWaitDialog() {
-					$('#myPleaseWait').modal('show');
-				}
-
-				function hideWaitDialog() {
-					$('#myPleaseWait').modal('hide');
-				}
-			})();
-		</script>
 	</body>
 </html>
