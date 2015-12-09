@@ -5,10 +5,8 @@ var express = require('express'),
 	bodyParser = require('body-parser'),
 	ejs = require('ejs'),
 	router = require('./routes/index'),
-	passport = require('passport'),
-	LocalStrategy = require('passport-local').Strategy,
-	expressSession = require('express-session'),
-	database = require('./lib/database');
+	passport = require('./lib/passport'),
+	expressSession = require('express-session');
 
 var app = express();
 
@@ -29,38 +27,6 @@ app.use(passport.session());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', router);
-
-passport.use(new LocalStrategy(function(user, pass, done) {
-	database.getUser(user, function(err, data) {
-		if (err) {
-			done(err);
-		} else {
-			if (data.Item.password === pass) {
-				done(null, data.Item);	
-			} else {
-				done(null, null, "Login Failed");
-			}
-		}
-	});
-}));
-
-passport.serializeUser(function(user, done) {
-	done(null, user.username);
-});
-
-passport.deserializeUser(function(login, done) {
-	database.getUser(login, function(err, data) {
-		if (err) {
-			done(err);
-		} else {
-			if (err) {
-				done(err);
-			} else {
-				done(null, data.Item);
-			}
-		}
-	});
-});
 
 app.use(function(req, res, next) {
 	var err = new Error('Not Found');

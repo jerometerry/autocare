@@ -1,5 +1,5 @@
 var express = require('express'),
-	passport = require('passport'),
+	passport = require('../lib/passport'),
 	file = require('../lib/files'),
 	database = require('../lib/database');
 
