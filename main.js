@@ -1,9 +1,9 @@
 var express = require('express'),
-    path = require('path'),
-    logger = require('morgan'),
-    cookieParser = require('cookie-parser'),
-    bodyParser = require('body-parser'),
-    ejs = require('ejs'),
+	path = require('path'),
+	logger = require('morgan'),
+	cookieParser = require('cookie-parser'),
+	bodyParser = require('body-parser'),
+	ejs = require('ejs'),
 	router = require('./routes/index'),
 	passport = require('passport'),
 	LocalStrategy = require('passport-local').Strategy,
@@ -54,7 +54,6 @@ passport.use(new LocalStrategy(function(user, pass, done) {
 			} else {
 				done(null, null, "Login Failed");
 			}
-			
 		}
 	});
 }));
@@ -105,6 +104,5 @@ app.use(function(err, req, res, next) {
 		error: {}
 	});
 });
-
 
 module.exports = app;
