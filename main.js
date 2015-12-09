@@ -7,7 +7,12 @@ var express = require('express'),
 	router = require('./routes/index'),
 	passport = require('passport'),
 	LocalStrategy = require('passport-local').Strategy,
-	expressSession = require('express-session');
+	expressSession = require('express-session'),
+	aws = require('aws-sdk');
+
+var AWS_ACCESS_KEY = process.env.AWS_ACCESS_KEY_ID;
+var AWS_SECRET_KEY = process.env.AWS_SECRET_KEY;
+var S3_BUCKET = process.env.S3_BUCKET;
 
 var app = express();
 
@@ -31,15 +36,50 @@ app.use('/', router);
 
 // passport config
 passport.use(new LocalStrategy(function(user, pass, done) {
-	// TODO - lookup user and validate password
+	aws.config.update( { accessKeyId: AWS_ACCESS_KEY, secretAccessKey: AWS_SECRET_KEY } );
+	aws.config.update( { region: 'us-east-1' } ); 
+	var dynamodbDoc = new aws.DynamoDB.DocumentClient();
+	var params = {
+		TableName : "Users",
+		Key : { 
+			username : user
+		}
+	};
+	dynamodbDoc.get(params, function(err, data) {
+		if (err) {
+			done(err);
+		} else {
+			if (data.Item.password === pass) {
+				done(null, data.Item);	
+			} else {
+				done(null, null, "Login Failed");
+			}
+			
+		}
+	});
 }));
 
 passport.serializeUser(function(user, done) {
-	done(null, user.id);
+	done(null, user.username);
 });
 
 passport.deserializeUser(function(login, done) {
-	// TODO - fetch user from DynamoDB
+	aws.config.update( { accessKeyId: AWS_ACCESS_KEY, secretAccessKey: AWS_SECRET_KEY } );
+	aws.config.update( { region: 'us-east-1' } ); 
+	var dynamodbDoc = new aws.DynamoDB.DocumentClient();
+	var params = {
+		TableName : "Users",
+		Key : { 
+			username : login
+		}
+	};
+	dynamodbDoc.get(params, function(err, data) {
+		if (err) {
+			done(err);
+		} else {
+			done(null, data.Item);
+		}
+	});
 });
 
 app.use(function(req, res, next) {

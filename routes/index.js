@@ -1,4 +1,5 @@
 var express = require('express'),
+	passport = require('passport'),
 	aws = require('aws-sdk');
 
 var router  = express.Router();
@@ -15,8 +16,8 @@ router.get('/login', function(req, res) {
 	res.render('pages/login');
 });
 
-router.post('/login', function(req, res) {
-	res.render('pages/login');
+router.post('/login', passport.authenticate('local'), function(req, res) {
+	res.redirect('/');
 });
 
 router.get('/files', isLoggedIn, function(req, res) {
