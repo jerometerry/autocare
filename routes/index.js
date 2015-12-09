@@ -19,7 +19,7 @@ router.post('/login', function(req, res) {
 	res.render('pages/login');
 });
 
-router.get('/files', function(req, res) {
+router.get('/files', isLoggedIn, function(req, res) {
 	res.render('pages/files');
 });
 
