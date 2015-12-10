@@ -33,3 +33,7 @@ node_modules
 
 # Mac specific excludes
 .DS_store
+
+# VS Code specific excludes
+.vscode
+
