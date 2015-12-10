@@ -29,60 +29,40 @@ router.get('/files', isLoggedIn, function(req, res) {
 
 router.get('/api/files/uploadurl', function(req, res) {
 	files.getUploadUrl(req.query.file_name, req.query.file_type, function(err, url) {
-		if(err) {
-			res.write(JSON.stringify( { url: null, error: err } ));
-			res.end();
-		} else {
-			res.write(JSON.stringify( { url: url } ));
-			res.end();
-		}
+		var result = err ? { url: null, error: err } : { url: url };
+		res.write(JSON.stringify( result ));
+		res.end();
 	});
 });
 
 router.get('/api/files/downloadurl', function(req, res) {
 	files.getDownloadUrl(req.query.file_name, function(err, url) {
-		if(err) {
-			res.write(JSON.stringify( { url: null, error: err } ));
-			res.end();
-		} else {
-			res.write(JSON.stringify( { url: url } ));
-			res.end();
-		}
+		var result = err ? { url: null, error: err } : { url: url };
+		res.write(JSON.stringify( result ));
+		res.end();
 	});
 });
 
 router.get('/api/metadata', function(req, res) {
 	database.getAllFileMetadata(function(err, data) {
-		if (err) {
-			res.write(JSON.stringify( { results: null, error: err } ));
-			res.end();
-		} else {
-			res.write(JSON.stringify( { results: data } ));
-			res.end();
-		}
+		var result = err ? { results: null, error: err } : { results: data };
+		res.write(JSON.stringify( result ));
+		res.end();
 	});
 });
 
 router.put('/api/metadata', function(req, res) {
 	database.addFileMetadata(req.body.file_name, function(err, data) {
-		if (err) {
-			res.write(JSON.stringify( { success: false, error: err } ));
-			res.end();
-		} else {
-			res.write(JSON.stringify( { success: true, results: data } ));
-			res.end();
-		}
+		var result = err ? { success: false, error: err } : { success: true, results: data };
+		res.write(JSON.stringify( result ));
+		res.end();
 	});
 });
 
-// route middleware to make sure a user is logged in
 function isLoggedIn(req, res, next) {
-
-    // if user is authenticated in the session, carry on 
-    if (req.isAuthenticated())
+    if (req.isAuthenticated()) {
         return next();
-
-    // if they aren't redirect them to the home page
+	}
     res.redirect('/');
 }
 
