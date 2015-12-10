@@ -4,7 +4,7 @@
  * Module dependencies.
  */
 
-var app = require('../main');
+var app = require('../index');
 var debug = require('debug')('autocare:server');
 var http = require('http');
 
