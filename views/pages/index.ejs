@@ -28,8 +28,13 @@
 					<ul class="nav navbar-nav">
 						<li class="active"><a href="/">Home</a></li>
 						<li><a href="/files">Files</a></li>
-						<li><a href="/login">Log in</a></li>
+						<li><a href="/login" class="login">Log in</a></li>
+						
+						<%if (loggedin) { %>
 						<li><a href="#" class="logout">Log out</a></li>
+						<% } %>
+						
+						
 					</ul>
 				</div>
 			</div>
@@ -49,16 +54,18 @@
 		
 		<script type="text/javascript">
 			(function() {
-				$("a.logout").click(function(e) {
-					e.preventDefault();
-					$.ajax({
-						url: '/logout',
-						method: 'POST',
-						success: function() {
-							document.location.href = "/"; 
-						}
+				$(document).ready(function() {
+					$("a.logout").click(function(e) {
+						e.preventDefault();
+						$.ajax({
+							url: '/logout',
+							method: 'POST',
+							success: function() {
+								document.location.href = "/"; 
+							}
+						});
+						return false;
 					});
-					return false;
 				});
 			})();
 		</script>
