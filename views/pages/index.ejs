@@ -29,6 +29,7 @@
 						<li class="active"><a href="/">Home</a></li>
 						<li><a href="/files">Files</a></li>
 						<li><a href="/login">Log in</a></li>
+						<li><a href="#" class="logout">Log out</a></li>
 					</ul>
 				</div>
 			</div>
@@ -45,5 +46,21 @@
 
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 		<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+		
+		<script type="text/javascript">
+			(function() {
+				$("a.logout").click(function(e) {
+					e.preventDefault();
+					$.ajax({
+						url: '/logout',
+						method: 'POST',
+						success: function() {
+							document.location.href = "/"; 
+						}
+					});
+					return false;
+				});
+			})();
+		</script>
 	</body>
 </html>

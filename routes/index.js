@@ -17,6 +17,12 @@ router.post('/login', passport.authenticate('local'), function(req, res) {
 	res.redirect('/');
 });
 
+router.post('/logout', function(req, res) {
+	req.session.destroy(function() {
+		res.end();
+	});
+});
+
 router.get('/files', isLoggedIn, function(req, res) {
 	res.render('pages/files');
 });

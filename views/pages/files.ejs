@@ -28,6 +28,7 @@
 					<ul class="nav navbar-nav">
 						<li><a href="/">Home</a></li>
 						<li class="active"><a href="/files">Files</a></li>
+						<li><a href="#" class="logout">Log out</a></li>
 					</ul>
 				</div>
 			</div>
@@ -90,5 +91,23 @@
 		<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 
 		<script src="js/autocare.files.js"></script>
+		
+		<script type="text/javascript">
+			(function() {
+				$(document).ready(function() {
+					$(".logout").click(function(e) {
+						e.preventDefault();
+						$.ajax({
+							url: '/logout',
+							method: 'POST',
+							success: function() {
+								document.location.href = "/"; 
+							}
+						});
+						return false;
+					});
+				});
+			})();
+		</script>
 	</body>
 </html>
