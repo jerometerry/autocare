@@ -1,6 +1,6 @@
 var express = require('express'),
 	passport = require('../lib/passport'),
-	file = require('../lib/files'),
+	files = require('../lib/files'),
 	database = require('../lib/database');
 
 var router  = express.Router();
