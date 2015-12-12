@@ -43,58 +43,46 @@
 				</p>
 			</div>
 			
-			<div id="lineItems">
-				<div id="templateLineItem">
-						<div>
-							<label for="quantityInput">Quantity</label>
-							<input type="text" id="quantityInput" />
-						</div>
-						
-						<div>
-							<label for="partNumberInput">Part No.</label>
-							<input type="text" id="partNumberInput" />
-						</div>
-						
-						<div>
-							<label for="descriptionInput">Description</label>
-							<input type="text" id="descriptionInput" />
-						</div>
-						
-						<div>
-							<label for="princeInput">Price</label>
-							<input type="text" id="priceInput" />
-						</div>
-						
-						<div>
-							<label for="markupInput">Markup</label>
-							<input type="text" id="markupInput" />
-						</div>
-						
-						<div>
-							<label for="envChargeRateInput">Env. Charge</label>
-							<input type="text" id="envChargeRateInput" />
-						</div>
-						
-						<div>
-							<label for="taxRateInput">Tax</label>
-							<input type="text" id="taxRateInput" />
-						</div>	
-						
-						<hr />
-				</div>
-			</div>
-			
 			<div>
-				<input type="submit" id="newLineItemBtn" value="New Line Item" />
-			</div>
-			
-			<div>
-				<input type="submit" id="applyMarkupBtn" value="Calculate" />
-			</div>
-			
-			<div>
-				<label for="resultInput">Total</label>
-				<input type="text" readonly="readonly" id="resultInput" />
+					<table>
+							<tr>
+									<th>Qty</th>
+									<th>Part #</th>
+									<th>Desc.</th>
+									<th>Unit Price</th>
+									<th>Markup</th>
+							</tr>
+							<tr>
+									<td><input type="text" /></td>
+									<td><input type="text" /></td>
+									<td><input type="text" /></td>
+									<td><input type="text" /></td>
+									<td><input type="text" /></td>
+							</tr>
+					</table>
+					
+					<div>
+						<input type="submit" id="newLineItemBtn" value="New Line Item" />
+					</div>
+					
+					<div>
+						<label for="envChargeRateInput">Env. Charge</label>
+						<input type="text" id="envChargeRateInput" />
+					</div>
+					
+					<div>
+						<label for="taxRateInput">Tax</label>
+						<input type="text" id="taxRateInput" />
+					</div>
+					
+					<div>
+						<input type="submit" id="applyMarkupBtn" value="Calculate" />
+					</div>
+					
+					<div>
+						<label for="resultInput">Total</label>
+						<input type="text" readonly="readonly" id="resultInput" />
+					</div>
 			</div>
 		</div>
 
@@ -116,6 +104,7 @@
 						return false;
 					});
 					
+					/*
 					$("#applyMarkupBtn").click(function(e) {
 						e.preventDefault();
 						var unitPrice = parseFloat($("#priceInput").val());
@@ -136,6 +125,7 @@
 						$("#templateLineItem").clone().appendTo("#lineItems");
 						return false;
 					});
+					*/
 				});
 			})();
 		</script>
