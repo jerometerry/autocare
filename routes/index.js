@@ -27,6 +27,10 @@ router.get('/files', isLoggedIn, function(req, res) {
 	res.render('pages/files');
 });
 
+router.get('/invoices', isLoggedIn, function(req, res) {
+	res.render('pages/invoices');
+});
+
 router.get('/api/files/uploadurl', function(req, res) {
 	files.getUploadUrl(req.query.file_name, req.query.file_type, function(err, url) {
 		var result = err ? { url: null, error: err } : { url: url };
