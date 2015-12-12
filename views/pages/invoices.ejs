@@ -8,6 +8,18 @@
 
 		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 		<link href="css/starter-template.css" rel="stylesheet">
+		
+		<style>
+			table {
+				border-collapse: separate;
+				border-spacing: 10px 0;
+			}
+			
+			td {
+				padding: 10px 0;
+			}
+		</style>
+		
 	</head>
 
 	<body>
@@ -50,14 +62,20 @@
 									<th>Part #</th>
 									<th>Desc.</th>
 									<th>Unit Price</th>
+									<th>Ext. Price</th>
+									<th>Unit Cost</th>
 									<th>Markup</th>
+									<th>Net Price</th>
 							</tr>
 							<tr>
+									<td><input type="text" style="width: 30px;" /></td>
 									<td><input type="text" /></td>
 									<td><input type="text" /></td>
-									<td><input type="text" /></td>
-									<td><input type="text" /></td>
-									<td><input type="text" /></td>
+									<td><input type="text" style="width: 100px;" /></td>
+									<td><input type="text" style="width: 100px;" /></td>
+									<td><input type="text" style="width: 100px;" /></td>
+									<td><input type="text" style="width: 100px;" /></td>
+									<td><input type="text" style="width: 100px;" /></td>
 							</tr>
 					</table>
 					
@@ -73,10 +91,6 @@
 					<div>
 						<label for="taxRateInput">Tax</label>
 						<input type="text" id="taxRateInput" />
-					</div>
-					
-					<div>
-						<input type="submit" id="applyMarkupBtn" value="Calculate" />
 					</div>
 					
 					<div>
